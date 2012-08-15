@@ -1,7 +1,10 @@
 {
-    "hash": "49a9eaa78d7d4072f3727fb7e710cc6b",
+    "hash": "aa66f285c6626e091cf90af53c27b1c4",
     "packages": [
-
+        {
+            "package": "webignition/string-parser",
+            "version": "0.1"
+        }
     ],
     "packages-dev": null,
     "aliases": [
