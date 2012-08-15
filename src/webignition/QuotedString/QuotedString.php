@@ -25,6 +25,15 @@ class QuotedString {
     
     
     /**
+     *
+     * @param string $value 
+     */
+    public function __construct($value = null) {
+        $this->value = $value;
+    }
+    
+    
+    /**
      * Value for the quoted string
      * 
      * Double quotes in the string must not be escaped - this is the unquoted
