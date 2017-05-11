@@ -6,129 +6,136 @@ use webignition\StringParser\StringParser;
 
 /**
  * Parse a given input string into a QuotedString
- * 
  */
-class Parser extends StringParser {
-    
+class Parser extends StringParser
+{
     const QUOTE_DELIMITER = '"';
     const ESCAPE_CHARACTER = '\\';
-    
+
     const STATE_IN_QUOTED_STRING = 1;
     const STATE_LEFT_QUOTED_STRING = 2;
     const STATE_INVALID_LEADING_CHARACTERS = 3;
-    const STATE_INVALID_TRAILING_CHARACTERS = 4;      
+    const STATE_INVALID_TRAILING_CHARACTERS = 4;
     const STATE_ENTERING_QUOTED_STRING = 5;
     const STATE_INVALID_ESCAPE_CHARACTER = 6;
-    
-    public function parse($inputString) {
-        return new QuotedString(parent::parse($inputString));        
+
+    /**
+     * @param string $inputString
+     *
+     * @return QuotedString
+     */
+    public function parse($inputString)
+    {
+        return new QuotedString(parent::parse($inputString));
     }
-    
-    protected function parseCurrentCharacter() {       
-        switch ($this->getCurrentState()) {            
+
+    protected function parseCurrentCharacter()
+    {
+        switch ($this->getCurrentState()) {
             case self::STATE_ENTERING_QUOTED_STRING:
                 $this->incrementCurrentCharacterPointer();
                 $this->setCurrentState(self::STATE_IN_QUOTED_STRING);
-                break;             
-            
+                break;
+
             case self::STATE_IN_QUOTED_STRING:
-                if ($this->isCurrentCharacterQuoteDelimiter()) {                    
+                if ($this->isCurrentCharacterQuoteDelimiter()) {
                     if ($this->isPreviousCharacterEscapeCharacter()) {
                         $this->appendOutputString();
                         $this->incrementCurrentCharacterPointer();
                     } else {
-                        $this->setCurrentState(self::STATE_LEFT_QUOTED_STRING);     
+                        $this->setCurrentState(self::STATE_LEFT_QUOTED_STRING);
                         $this->incrementCurrentCharacterPointer();
                     }
                 }
-                
+
                 if ($this->isCurrentCharacterEscapeCharacter()) {
                     if ($this->isNextCharacterQuoteCharacter()) {
-                        $this->incrementCurrentCharacterPointer();                       
+                        $this->incrementCurrentCharacterPointer();
                     } else {
                         $this->setCurrentState(self::STATE_INVALID_ESCAPE_CHARACTER);
                     }
                 }
-               
+
                 if (!$this->isCurrentCharacterQuoteDelimiter() && !$this->isCurrentCharacterEscapeCharacter()) {
                     $this->appendOutputString();
                     $this->incrementCurrentCharacterPointer();
                 }
-                
+
                 break;
-            
+
             case self::STATE_LEFT_QUOTED_STRING:
                 if (!$this->isCurrentCharacterLastCharacter()) {
                     $this->setCurrentState(self::STATE_INVALID_TRAILING_CHARACTERS);
                     $this->incrementCurrentCharacterPointer();
                 }
-                
+
                 break;
-                
+
             case self::STATE_UNKNOWN:
                 $this->deriveCurrentState();
-                break;                
+                break;
 
             case self::STATE_INVALID_LEADING_CHARACTERS:
                 throw new Exception('Invalid leading characters before first quote character', 1);
                 break;
-            
+
             case self::STATE_INVALID_ESCAPE_CHARACTER:
                 throw new Exception('Invalid escape character at position '.$this->getCurrentCharacterPointer(), 3);
                 break;
-            
+
             case self::STATE_INVALID_TRAILING_CHARACTERS:
-                throw new Exception('Invalid trailing characters after last quote character at position '.$this->getCurrentCharacterPointer().' - did you forget to escape an internal quote?', 2);
-                break;                
+                $exceptionMessage = implode(' ', [
+                    'Invalid trailing characters after last quote character at position',
+                    $this->getCurrentCharacterPointer(),
+                ]);
+
+                throw new Exception($exceptionMessage, 2);
+                break;
         }
     }
 
-    
-    private function deriveCurrentState() {
+    private function deriveCurrentState()
+    {
         if ($this->isCurrentCharacterFirstCharacter()) {
             if ($this->isCurrentCharacterQuoteDelimiter()) {
-                return $this->setCurrentState(self::STATE_ENTERING_QUOTED_STRING);
+                $this->setCurrentState(self::STATE_ENTERING_QUOTED_STRING);
+
+                return;
             }
-            
-            return $this->setCurrentState(self::STATE_INVALID_LEADING_CHARACTERS);
+
+            $this->setCurrentState(self::STATE_INVALID_LEADING_CHARACTERS);
         }
     }
-    
-    
+
     /**
-     *
      * @return boolean
      */
-    private function isCurrentCharacterQuoteDelimiter() {
+    private function isCurrentCharacterQuoteDelimiter()
+    {
         return $this->getCurrentCharacter() == self::QUOTE_DELIMITER;
     }
-    
 
     /**
-     *
      * @return boolean
      */
-    private function isCurrentCharacterEscapeCharacter() {
+    private function isCurrentCharacterEscapeCharacter()
+    {
         return $this->getCurrentCharacter() == self::ESCAPE_CHARACTER;
-    }    
-    
+    }
+
     /**
-     *
      * @return boolean
      */
-    private function isPreviousCharacterEscapeCharacter() {
+    private function isPreviousCharacterEscapeCharacter()
+    {
         return $this->getPreviousCharacter() == self::ESCAPE_CHARACTER;
     }
-    
-    
+
     /**
-     *
      * @return boolean
      */
-    private function isNextCharacterQuoteCharacter() {
+    private function isNextCharacterQuoteCharacter()
+    {
         return $this->getNextCharacter() == self::QUOTE_DELIMITER;
-    }  
-    
-
+    }
 }
- 
