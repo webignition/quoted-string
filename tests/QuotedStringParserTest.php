@@ -54,9 +54,6 @@ class QuotedStringParserTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider parseValidInputDataProvider
-     *
-     * @param string $input
-     * @param string $expectedValue
      */
     public function testParseValidInput(string $input, string $expectedValue)
     {

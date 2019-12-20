@@ -82,11 +82,9 @@ class Parser extends StringParser
 
             case self::STATE_INVALID_LEADING_CHARACTERS:
                 throw new Exception('Invalid leading characters before first quote character', 1);
-                break;
 
             case self::STATE_INVALID_ESCAPE_CHARACTER:
                 throw new Exception('Invalid escape character at position ' . $this->getCurrentCharacterPointer(), 3);
-                break;
 
             case self::STATE_INVALID_TRAILING_CHARACTERS:
                 $exceptionMessage = implode(' ', [
@@ -95,7 +93,6 @@ class Parser extends StringParser
                 ]);
 
                 throw new Exception($exceptionMessage, 2);
-                break;
         }
     }
 
