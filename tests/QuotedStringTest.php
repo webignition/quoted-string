@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace webignition\Tests\QuotedString;
 
-use PHPUnit_Framework_TestCase;
 use webignition\QuotedString\QuotedString;
 
-class QuotedStringTest extends PHPUnit_Framework_TestCase
+class QuotedStringTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider castToStringDataProvider

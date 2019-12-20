@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace webignition\Tests\QuotedString;
 
-use PHPUnit_Framework_TestCase;
 use webignition\QuotedString\Exception;
 use webignition\QuotedString\Parser;
 use webignition\QuotedString\QuotedString;
 
-class QuotedStringParserTest extends PHPUnit_Framework_TestCase
+class QuotedStringParserTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Parser
      */
     private $parser;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->parser = new Parser();
@@ -22,39 +23,31 @@ class QuotedStringParserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider parseInvalidInputDataProvider
-     *
-     * @param string $input
-     * @param string $expectedExceptionMessage
-     * @param int $expectedExceptionCode
      */
-    public function testParseInvalidInput($input, $expectedExceptionMessage, $expectedExceptionCode)
+    public function testParseInvalidInput(string $input, \Exception $expectedException)
     {
-        $this->setExpectedException(
-            Exception::class,
-            $expectedExceptionMessage,
-            $expectedExceptionCode
-        );
+        $this->expectExceptionObject($expectedException);
 
         $this->parser->parse($input);
     }
 
-    public function parseInvalidInputDataProvider()
+    public function parseInvalidInputDataProvider(): array
     {
         return [
             'invalid leading characters' => [
                 'input' => 'foo',
-                'expectedExceptionMessage' => 'Invalid leading characters before first quote character',
-                'expectedExceptionCode' => 1,
+                'expectedException' => new Exception('Invalid leading characters before first quote character', 1),
             ],
             'invalid trailing characters' => [
                 'input' => '"foo" bar',
-                'expectedExceptionMessage' => 'Invalid trailing characters after last quote character at position 7',
-                'expectedExceptionCode' => 2,
+                'expectedException' => new Exception(
+                    'Invalid trailing characters after last quote character at position 7',
+                    2
+                ),
             ],
             'invalid escape characters' => [
                 'input' => '"foo \bar"',
-                'expectedExceptionMessage' => 'Invalid escape character at position 5',
-                'expectedExceptionCode' => 3,
+                'expectedException' => new Exception('Invalid escape character at position 5', 3),
             ],
         ];
     }
@@ -65,18 +58,15 @@ class QuotedStringParserTest extends PHPUnit_Framework_TestCase
      * @param string $input
      * @param string $expectedValue
      */
-    public function testParseValidInput($input, $expectedValue)
+    public function testParseValidInput(string $input, string $expectedValue)
     {
-        $quotedString = $this->parser->parse($input);
+        $quotedString = $this->parser->parseToObject($input);
 
         $this->assertInstanceOf(QuotedString::class, $quotedString);
-        $this->assertEquals($expectedValue, (string)$quotedString->getValue());
+        $this->assertEquals($expectedValue, $quotedString->getValue());
     }
 
-    /**
-     * @return array
-     */
-    public function parseValidInputDataProvider()
+    public function parseValidInputDataProvider(): array
     {
         return [
             'without inner quotes' => [
