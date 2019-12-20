@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace webignition\QuotedString;
 
 /**
@@ -26,23 +28,17 @@ class QuotedString
     /**
      * @param string $value The unquoted raw value
      */
-    public function __construct($value = null)
+    public function __construct(?string $value = null)
     {
         $this->value = $value;
     }
 
-    /**
-     * @return string
-     */
-    public function getValue()
+    public function getValue(): string
     {
-        return (string)$this->value;
+        return (string) $this->value;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return '"'.  str_replace('"', '\"', $this->value).'"';
     }

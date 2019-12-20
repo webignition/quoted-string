@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace webignition\QuotedString;
 
 use webignition\StringParser\StringParser;
@@ -19,17 +21,20 @@ class Parser extends StringParser
     const STATE_ENTERING_QUOTED_STRING = 5;
     const STATE_INVALID_ESCAPE_CHARACTER = 6;
 
-    /**
-     * @param string $inputString
-     *
-     * @return QuotedString
-     */
-    public function parse($inputString)
+    public function parseToObject(string $inputString): QuotedString
     {
         return new QuotedString(parent::parse($inputString));
     }
 
-    protected function parseCurrentCharacter()
+    public function parse(string $inputString): string
+    {
+        return (string) $this->parseToObject($inputString);
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function parseCurrentCharacter(): void
     {
         switch ($this->getCurrentState()) {
             case self::STATE_ENTERING_QUOTED_STRING:
@@ -94,7 +99,7 @@ class Parser extends StringParser
         }
     }
 
-    private function deriveCurrentState()
+    private function deriveCurrentState(): void
     {
         if ($this->isCurrentCharacterFirstCharacter()) {
             if ($this->isCurrentCharacterQuoteDelimiter()) {
@@ -107,34 +112,22 @@ class Parser extends StringParser
         }
     }
 
-    /**
-     * @return boolean
-     */
-    private function isCurrentCharacterQuoteDelimiter()
+    private function isCurrentCharacterQuoteDelimiter(): bool
     {
         return $this->getCurrentCharacter() == self::QUOTE_DELIMITER;
     }
 
-    /**
-     * @return boolean
-     */
-    private function isCurrentCharacterEscapeCharacter()
+    private function isCurrentCharacterEscapeCharacter(): bool
     {
         return $this->getCurrentCharacter() == self::ESCAPE_CHARACTER;
     }
 
-    /**
-     * @return boolean
-     */
-    private function isPreviousCharacterEscapeCharacter()
+    private function isPreviousCharacterEscapeCharacter(): bool
     {
         return $this->getPreviousCharacter() == self::ESCAPE_CHARACTER;
     }
 
-    /**
-     * @return boolean
-     */
-    private function isNextCharacterQuoteCharacter()
+    private function isNextCharacterQuoteCharacter(): bool
     {
         return $this->getNextCharacter() == self::QUOTE_DELIMITER;
     }
