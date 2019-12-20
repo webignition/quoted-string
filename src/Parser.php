@@ -11,15 +11,15 @@ use webignition\StringParser\StringParser;
  */
 class Parser extends StringParser
 {
-    const QUOTE_DELIMITER = '"';
-    const ESCAPE_CHARACTER = '\\';
+    private const QUOTE_DELIMITER = '"';
+    private const ESCAPE_CHARACTER = '\\';
 
-    const STATE_IN_QUOTED_STRING = 1;
-    const STATE_LEFT_QUOTED_STRING = 2;
-    const STATE_INVALID_LEADING_CHARACTERS = 3;
-    const STATE_INVALID_TRAILING_CHARACTERS = 4;
-    const STATE_ENTERING_QUOTED_STRING = 5;
-    const STATE_INVALID_ESCAPE_CHARACTER = 6;
+    private const STATE_IN_QUOTED_STRING = 1;
+    private const STATE_LEFT_QUOTED_STRING = 2;
+    private const STATE_INVALID_LEADING_CHARACTERS = 3;
+    private const STATE_INVALID_TRAILING_CHARACTERS = 4;
+    private const STATE_ENTERING_QUOTED_STRING = 5;
+    private const STATE_INVALID_ESCAPE_CHARACTER = 6;
 
     public function parseToObject(string $inputString): QuotedString
     {
@@ -85,7 +85,7 @@ class Parser extends StringParser
                 break;
 
             case self::STATE_INVALID_ESCAPE_CHARACTER:
-                throw new Exception('Invalid escape character at position '.$this->getCurrentCharacterPointer(), 3);
+                throw new Exception('Invalid escape character at position ' . $this->getCurrentCharacterPointer(), 3);
                 break;
 
             case self::STATE_INVALID_TRAILING_CHARACTERS:

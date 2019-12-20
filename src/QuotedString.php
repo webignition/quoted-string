@@ -40,6 +40,6 @@ class QuotedString
 
     public function __toString(): string
     {
-        return '"'.  str_replace('"', '\"', $this->value).'"';
+        return '"' .  str_replace('"', '\"', $this->value) . '"';
     }
 }
