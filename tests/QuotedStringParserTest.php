@@ -74,6 +74,14 @@ class QuotedStringParserTest extends \PHPUnit\Framework\TestCase
                 'input' => '"foo \"bar\" foobar"',
                 'expectedValue' => 'foo "bar" foobar',
             ],
+            'without inner quotes, utf8 cantonese' => [
+                'input' => '"我隻氣墊船裝滿晒鱔"',
+                'expectedValue' => '我隻氣墊船裝滿晒鱔',
+            ],
+            'with inner quotes, utf8 cantonese' => [
+                'input' => '"我隻氣\"墊船裝\"滿晒鱔"',
+                'expectedValue' => '我隻氣"墊船裝"滿晒鱔',
+            ],
         ];
     }
 }
