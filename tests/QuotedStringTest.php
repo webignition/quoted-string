@@ -10,21 +10,15 @@ class QuotedStringTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider castToStringDataProvider
-     *
-     * @param $input
-     * @param $expectedQuotedString
      */
-    public function testCastToString($input, $expectedQuotedString)
+    public function testCastToString(string $input, string $expectedQuotedString)
     {
         $quotedString = new QuotedString($input);
 
         $this->assertEquals($expectedQuotedString, (string)$quotedString);
     }
 
-    /**
-     * @return array
-     */
-    public function castToStringDataProvider()
+    public function castToStringDataProvider(): array
     {
         return [
             'without inner quotes' => [
