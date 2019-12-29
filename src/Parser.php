@@ -21,11 +21,25 @@ class Parser extends StringParser
     private const STATE_ENTERING_QUOTED_STRING = 5;
     private const STATE_INVALID_ESCAPE_CHARACTER = 6;
 
+    /**
+     * @param string $inputString
+     *
+     * @return QuotedString
+     *
+     * @throws Exception
+     */
     public function parseToObject(string $inputString): QuotedString
     {
         return new QuotedString(parent::parse($inputString));
     }
 
+    /**
+     * @param string $inputString
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
     public function parse(string $inputString): string
     {
         return (string) $this->parseToObject($inputString);
