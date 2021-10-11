@@ -12,8 +12,8 @@
         }
     ],
     "scripts": {
-        "cs": "./vendor/bin/phpcs src tests --colors --standard=PSR12",
-        "static-analysis": "./vendor/bin/phpstan analyse src tests --level=7",
+        "cs-phpcs": "./vendor/bin/phpcs",
+        "static-analysis": "./vendor/bin/phpstan",
         "test": "./vendor/bin/phpunit --colors=always",
         "ci": [
             "@composer cs",
@@ -28,13 +28,13 @@
         }
     },
     "require": {
-        "php": ">=7.2.0",
+        "php": ">=7.4",
         "webignition/string-parser":">=1.1,<2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0",
-        "squizlabs/php_codesniffer": "^3.5",
-        "phpstan/phpstan": "^0.12.3"
+        "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "^3.6",
+        "phpstan/phpstan": "^0.12.99"
     },
     "minimum-stability":"stable",
     "prefer-stable":true

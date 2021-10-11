@@ -24,13 +24,16 @@ class QuotedStringParserTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider parseInvalidInputDataProvider
      */
-    public function testParseInvalidInput(string $input, \Exception $expectedException)
+    public function testParseInvalidInput(string $input, \Exception $expectedException): void
     {
         $this->expectExceptionObject($expectedException);
 
         $this->parser->parse($input);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function parseInvalidInputDataProvider(): array
     {
         return [
@@ -55,7 +58,7 @@ class QuotedStringParserTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider parseValidInputDataProvider
      */
-    public function testParseValidInput(string $input, string $expectedValue)
+    public function testParseValidInput(string $input, string $expectedValue): void
     {
         $quotedString = $this->parser->parseToObject($input);
 
@@ -63,6 +66,9 @@ class QuotedStringParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedValue, $quotedString->getValue());
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function parseValidInputDataProvider(): array
     {
         return [
