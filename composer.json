@@ -28,7 +28,7 @@
         }
     },
     "require": {
-        "php": ">=7.2.0",
+        "php": ">=7.4",
         "webignition/string-parser":">=1.1,<2"
     },
     "require-dev": {
