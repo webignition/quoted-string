@@ -16,21 +16,14 @@ namespace webignition\QuotedString;
  *
  * "{anything apart from quote or backslash, unless \" is used to escape quote}"
  */
-class QuotedString
+class QuotedString implements \Stringable
 {
     /**
-     * The unquoted value.
-     *
-     * @var null|string
+     * @param ?string $value The unquoted raw value
      */
-    private $value;
-
-    /**
-     * @param string $value The unquoted raw value
-     */
-    public function __construct(?string $value = null)
-    {
-        $this->value = $value;
+    public function __construct(
+        private ?string $value = null
+    ) {
     }
 
     public function __toString(): string

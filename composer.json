@@ -34,8 +34,8 @@
         }
     },
     "require": {
-        "php": ">=7.4",
-        "webignition/string-parser":">=1.1,<2"
+        "php": ">=8",
+        "webignition/string-parser":">=2,<3"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
