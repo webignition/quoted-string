@@ -6,7 +6,7 @@ namespace webignition\QuotedString;
 
 /**
  * A quoted string as defined in RFC2822 section 3.2.5:
- * http://tools.ietf.org/html/rfc2822#section-3.2.5
+ * http://tools.ietf.org/html/rfc2822#section-3.2.5.
  *
  * This does not include the ability for a quoted string
  * to have leading and trailing commands and folding
@@ -19,9 +19,9 @@ namespace webignition\QuotedString;
 class QuotedString
 {
     /**
-     * The unquoted value
+     * The unquoted value.
      *
-     * @var string|null
+     * @var null|string
      */
     private $value;
 
@@ -33,13 +33,13 @@ class QuotedString
         $this->value = $value;
     }
 
+    public function __toString(): string
+    {
+        return '"' . str_replace('"', '\"', (string) $this->value) . '"';
+    }
+
     public function getValue(): string
     {
         return (string) $this->value;
-    }
-
-    public function __toString(): string
-    {
-        return '"' .  str_replace('"', '\"', (string) $this->value) . '"';
     }
 }
