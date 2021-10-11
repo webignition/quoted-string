@@ -21,7 +21,7 @@ class QuotedString
     /**
      * The unquoted value
      *
-     * @var string
+     * @var string|null
      */
     private $value;
 
@@ -40,6 +40,6 @@ class QuotedString
 
     public function __toString(): string
     {
-        return '"' .  str_replace('"', '\"', $this->value) . '"';
+        return '"' .  str_replace('"', '\"', (string) $this->value) . '"';
     }
 }
