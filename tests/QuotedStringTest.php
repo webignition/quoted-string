@@ -15,7 +15,7 @@ class QuotedStringTest extends \PHPUnit\Framework\TestCase
     {
         $quotedString = new QuotedString($input);
 
-        $this->assertEquals($expectedQuotedString, (string)$quotedString);
+        $this->assertEquals($expectedQuotedString, (string) $quotedString);
     }
 
     /**
