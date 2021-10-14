@@ -6,23 +6,9 @@ namespace webignition\QuotedString;
 
 use webignition\StringParser\StringParser;
 use webignition\StringParser\UnknownStateException;
-use function Symfony\Component\String\s;
 
-/**
- * Parse a given input string into a QuotedString.
- */
-class Parser
+class Parser implements ParserInterface
 {
-    private const QUOTE_DELIMITER = '"';
-    private const ESCAPE_CHARACTER = '\\';
-
-    private const STATE_IN_QUOTED_STRING = 1;
-    private const STATE_LEFT_QUOTED_STRING = 2;
-    private const STATE_INVALID_LEADING_CHARACTERS = 3;
-    private const STATE_INVALID_TRAILING_CHARACTERS = 4;
-    private const STATE_ENTERING_QUOTED_STRING = 5;
-    private const STATE_INVALID_ESCAPE_CHARACTER = 6;
-
     private StringParser $stringParser;
 
     public function __construct()
@@ -75,10 +61,11 @@ class Parser
 
     /**
      * @throws Exception
+     * @throws UnknownStateException
      */
     public function parse(string $input): string
     {
-        return (string) $this->parseToObject($input);
+        return $this->stringParser->parse($input);
     }
 
     private function handleUnknownState(StringParser $stringParser): void
