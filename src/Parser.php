@@ -32,8 +32,7 @@ class Parser
                 $this->handleUnknownState($stringParser);
             },
             self::STATE_ENTERING_QUOTED_STRING => function (StringParser $stringParser) {
-                $stringParser->incrementPointer();
-                $stringParser->setState(self::STATE_IN_QUOTED_STRING);
+                $this->handleEnteringQuotedStringState($stringParser);
             },
             self::STATE_IN_QUOTED_STRING => function (StringParser $stringParser) {
                 $this->handleInQuotedStringState($stringParser);
@@ -89,6 +88,12 @@ class Parser
                 ? self::STATE_ENTERING_QUOTED_STRING
                 : self::STATE_INVALID_LEADING_CHARACTERS
         );
+    }
+
+    private function handleEnteringQuotedStringState(StringParser $stringParser): void
+    {
+        $stringParser->incrementPointer();
+        $stringParser->setState(self::STATE_IN_QUOTED_STRING);
     }
 
     private function handleInQuotedStringState(StringParser $stringParser): void
