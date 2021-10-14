@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "596ba0eb0176c1d3a29ee1d631df5ecf",
+    "content-hash": "4589084ac32012b47ec7b3ddbb4d7e35",
     "packages": [
         {
             "name": "webignition/string-parser",
-            "version": "2.0",
+            "version": "3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/string-parser.git",
-                "reference": "dc8f688e3577f79099c1b3c298176f169de60b48"
+                "reference": "85c0e035335122fa6388abbf9db564864d7e00b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/string-parser/zipball/dc8f688e3577f79099c1b3c298176f169de60b48",
-                "reference": "dc8f688e3577f79099c1b3c298176f169de60b48",
+                "url": "https://api.github.com/repos/webignition/string-parser/zipball/85c0e035335122fa6388abbf9db564864d7e00b6",
+                "reference": "85c0e035335122fa6388abbf9db564864d7e00b6",
                 "shasum": ""
             },
             "require": {
@@ -53,9 +53,9 @@
             ],
             "support": {
                 "issues": "https://github.com/webignition/string-parser/issues",
-                "source": "https://github.com/webignition/string-parser/tree/2.0"
+                "source": "https://github.com/webignition/string-parser/tree/3.0"
             },
-            "time": "2021-10-11T14:44:12+00:00"
+            "time": "2021-10-14T10:17:23+00:00"
         }
     ],
     "packages-dev": [
