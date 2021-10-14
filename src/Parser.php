@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace webignition\QuotedString;
 
 use webignition\StringParser\StringParser;
+use webignition\StringParser\UnknownStateException;
 
 /**
  * Parse a given input string into a QuotedString.
  */
-class Parser extends StringParser
+class Parser
 {
     private const QUOTE_DELIMITER = '"';
     private const ESCAPE_CHARACTER = '\\';
@@ -21,119 +22,88 @@ class Parser extends StringParser
     private const STATE_ENTERING_QUOTED_STRING = 5;
     private const STATE_INVALID_ESCAPE_CHARACTER = 6;
 
-    /**
-     * @throws Exception
-     */
-    public function parseToObject(string $inputString): QuotedString
+    private StringParser $stringParser;
+
+    public function __construct()
     {
-        return new QuotedString(parent::parse($inputString));
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function parse(string $inputString): string
-    {
-        return (string) $this->parseToObject($inputString);
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function parseCurrentCharacter(): void
-    {
-        switch ($this->getCurrentState()) {
-            case self::STATE_ENTERING_QUOTED_STRING:
-                $this->incrementCurrentCharacterPointer();
-                $this->setCurrentState(self::STATE_IN_QUOTED_STRING);
-
-                break;
-
-            case self::STATE_IN_QUOTED_STRING:
-                if ($this->isCurrentCharacterQuoteDelimiter()) {
-                    if ($this->isPreviousCharacterEscapeCharacter()) {
-                        $this->appendOutputString();
-                        $this->incrementCurrentCharacterPointer();
+        $this->stringParser = new StringParser([
+            StringParser::STATE_UNKNOWN => function (StringParser $stringParser) {
+                if ($stringParser->isCurrentCharacterFirstCharacter()) {
+                    if (self::QUOTE_DELIMITER === $stringParser->getCurrentCharacter()) {
+                        $stringParser->setState(self::STATE_ENTERING_QUOTED_STRING);
                     } else {
-                        $this->setCurrentState(self::STATE_LEFT_QUOTED_STRING);
-                        $this->incrementCurrentCharacterPointer();
+                        $stringParser->setState(self::STATE_INVALID_LEADING_CHARACTERS);
+                    }
+                }
+            },
+            self::STATE_IN_QUOTED_STRING => function (StringParser $stringParser) {
+                $isQuoteDelimiter = self::QUOTE_DELIMITER === $stringParser->getCurrentCharacter();
+                $isEscapeCharacter = self::ESCAPE_CHARACTER === $stringParser->getCurrentCharacter();
+
+                if ($isQuoteDelimiter) {
+                    if (self::ESCAPE_CHARACTER === $stringParser->getPreviousCharacter()) {
+                        $stringParser->appendOutputString();
+                        $stringParser->incrementPointer();
+                    } else {
+                        $stringParser->setState(self::STATE_LEFT_QUOTED_STRING);
+                        $stringParser->incrementPointer();
                     }
                 }
 
-                if ($this->isCurrentCharacterEscapeCharacter()) {
-                    if ($this->isNextCharacterQuoteCharacter()) {
-                        $this->incrementCurrentCharacterPointer();
+                if ($isEscapeCharacter) {
+                    if (self::QUOTE_DELIMITER === $stringParser->getNextCharacter()) {
+                        $stringParser->incrementPointer();
                     } else {
-                        $this->setCurrentState(self::STATE_INVALID_ESCAPE_CHARACTER);
+                        $stringParser->setState(self::STATE_INVALID_ESCAPE_CHARACTER);
                     }
                 }
 
-                if (!$this->isCurrentCharacterQuoteDelimiter() && !$this->isCurrentCharacterEscapeCharacter()) {
-                    $this->appendOutputString();
-                    $this->incrementCurrentCharacterPointer();
+                if (!$isQuoteDelimiter && !$isEscapeCharacter) {
+                    $stringParser->appendOutputString();
+                    $stringParser->incrementPointer();
                 }
-
-                break;
-
-            case self::STATE_LEFT_QUOTED_STRING:
-                if (!$this->isCurrentCharacterLastCharacter()) {
-                    $this->setCurrentState(self::STATE_INVALID_TRAILING_CHARACTERS);
-                    $this->incrementCurrentCharacterPointer();
+            },
+            self::STATE_LEFT_QUOTED_STRING => function (StringParser $stringParser) {
+                if (!$stringParser->isCurrentCharacterLastCharacter()) {
+                    $stringParser->setState(self::STATE_INVALID_TRAILING_CHARACTERS);
+//                    $stringParser->incrementPointer();
                 }
-
-                break;
-
-            case self::STATE_UNKNOWN:
-                $this->deriveCurrentState();
-
-                break;
-
-            case self::STATE_INVALID_LEADING_CHARACTERS:
+            },
+            self::STATE_INVALID_LEADING_CHARACTERS => function (StringParser $stringParser) {
                 throw new Exception('Invalid leading characters before first quote character', 1);
-
-            case self::STATE_INVALID_ESCAPE_CHARACTER:
-                throw new Exception('Invalid escape character at position ' . $this->getCurrentCharacterPointer(), 3);
-
-            case self::STATE_INVALID_TRAILING_CHARACTERS:
+            },
+            self::STATE_INVALID_TRAILING_CHARACTERS => function (StringParser $stringParser) {
                 $exceptionMessage = implode(' ', [
                     'Invalid trailing characters after last quote character at position',
-                    $this->getCurrentCharacterPointer(),
+                    $stringParser->getPointer(),
                 ]);
 
                 throw new Exception($exceptionMessage, 2);
-        }
+            },
+            self::STATE_ENTERING_QUOTED_STRING => function (StringParser $stringParser) {
+                $stringParser->incrementPointer();
+                $stringParser->setState(self::STATE_IN_QUOTED_STRING);
+            },
+            self::STATE_INVALID_ESCAPE_CHARACTER => function (StringParser $stringParser) {
+                throw new Exception('Invalid escape character at position ' . $stringParser->getPointer(), 3);
+            },
+        ]);
     }
 
-    private function deriveCurrentState(): void
+    /**
+     * @throws Exception
+     * @throws UnknownStateException
+     */
+    public function parseToObject(string $input): QuotedString
     {
-        if ($this->isCurrentCharacterFirstCharacter()) {
-            if ($this->isCurrentCharacterQuoteDelimiter()) {
-                $this->setCurrentState(self::STATE_ENTERING_QUOTED_STRING);
-
-                return;
-            }
-
-            $this->setCurrentState(self::STATE_INVALID_LEADING_CHARACTERS);
-        }
+        return new QuotedString($this->stringParser->parse($input));
     }
 
-    private function isCurrentCharacterQuoteDelimiter(): bool
+    /**
+     * @throws Exception
+     */
+    public function parse(string $input): string
     {
-        return self::QUOTE_DELIMITER == $this->getCurrentCharacter();
-    }
-
-    private function isCurrentCharacterEscapeCharacter(): bool
-    {
-        return self::ESCAPE_CHARACTER == $this->getCurrentCharacter();
-    }
-
-    private function isPreviousCharacterEscapeCharacter(): bool
-    {
-        return self::ESCAPE_CHARACTER == $this->getPreviousCharacter();
-    }
-
-    private function isNextCharacterQuoteCharacter(): bool
-    {
-        return self::QUOTE_DELIMITER == $this->getNextCharacter();
+        return (string) $this->parseToObject($input);
     }
 }

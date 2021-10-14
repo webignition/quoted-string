@@ -44,7 +44,7 @@ class QuotedStringParserTest extends \PHPUnit\Framework\TestCase
             'invalid trailing characters' => [
                 'input' => '"foo" bar',
                 'expectedException' => new Exception(
-                    'Invalid trailing characters after last quote character at position 7',
+                    'Invalid trailing characters after last quote character at position 5',
                     2
                 ),
             ],
