@@ -26,7 +26,7 @@ class Parser implements ParserInterface
             self::STATE_LEFT_QUOTED_STRING => function (StringParser $stringParser) {
                 $this->handleLeftQuotedStringState($stringParser);
             },
-            self::STATE_INVALID_LEADING_CHARACTERS => function (StringParser $stringParser) {
+            self::STATE_INVALID_LEADING_CHARACTERS => function () {
                 throw new Exception('Invalid leading characters before first quote character', 1);
             },
             self::STATE_INVALID_TRAILING_CHARACTERS => function (StringParser $stringParser) {
