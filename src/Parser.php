@@ -66,7 +66,6 @@ class Parser
             self::STATE_LEFT_QUOTED_STRING => function (StringParser $stringParser) {
                 if (!$stringParser->isCurrentCharacterLastCharacter()) {
                     $stringParser->setState(self::STATE_INVALID_TRAILING_CHARACTERS);
-//                    $stringParser->incrementPointer();
                 }
             },
             self::STATE_INVALID_LEADING_CHARACTERS => function (StringParser $stringParser) {
